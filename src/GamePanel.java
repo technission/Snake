@@ -6,13 +6,14 @@ import javax.swing.*;
 
 public class GamePanel extends JPanel implements ActionListener{
 	
-	static final int SCREEN_WIDTH = 600;
-	static final int SCREEN_HEIGHT = 600;
+	static final int SCREEN_WIDTH = 1000;
+	static final int SCREEN_HEIGHT = 1000;
 	static final int UNIT_SIZE = 25;
 	static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/UNIT_SIZE;
 	static final int DELAY = 100;
 	final int x[] = new int[GAME_UNITS];
 	final int y[] = new int[GAME_UNITS];
+	int speed = 1;
 	int bodyParts = 6;
 	int applesEaten;
 	int appleX;
@@ -25,13 +26,14 @@ public class GamePanel extends JPanel implements ActionListener{
 	GamePanel() {
 		random = new Random();
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-		this.setBackground(Color.gray);
+		this.setBackground(Color.black);
 		this.setFocusable(true);
 		this.addKeyListener(new MyKeyAdapter());
 		startGame();
 		
 	}
 	
+
 	public void startGame() {
 		newApple();
 		running = true;
@@ -51,7 +53,7 @@ public class GamePanel extends JPanel implements ActionListener{
 				g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
 			}
 			
-				g.setColor(Color.blue);
+				g.setColor(Color.red);
 				g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
 				
 				for(int i = 0;i<bodyParts;i++) {
@@ -60,14 +62,18 @@ public class GamePanel extends JPanel implements ActionListener{
 						g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
 					} else {
 						g.setColor(new Color(45,180,0));
-						g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+						g.fillOval(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
 					}
 				}
 				g.setColor(Color.red);
-				//g.setFont(new Font("Ink free", Font.BOLD, 40));
-				g.setFont(new Font("Arial Black", Font.BOLD, 40));
+				g.setFont(new Font("Ink free", Font.BOLD, 40));
 				FontMetrics metrics = getFontMetrics(g.getFont());
 				g.drawString("Score: " +applesEaten, (SCREEN_WIDTH - metrics.stringWidth("Score: " +applesEaten))/2, g.getFont().getSize());
+				
+				g.setColor(Color.red);
+				g.setFont(new Font("Ink free", Font.BOLD, 40));
+				FontMetrics metrics3 = getFontMetrics(g.getFont());
+				g.drawString("Speed: " +speed, (SCREEN_WIDTH /2 - metrics3.stringWidth("Speed: " +speed))/2, g.getFont().getSize());
 			}
 		else {
 			gameOver(g);
@@ -108,6 +114,9 @@ public class GamePanel extends JPanel implements ActionListener{
 			bodyParts++;
 			applesEaten++;
 			newApple();
+			timer.setDelay(timer.getDelay() -1);
+			speed++;
+			
 		}
 	}
 	
@@ -163,6 +172,8 @@ public class GamePanel extends JPanel implements ActionListener{
 		repaint();
 	}
 	
+	
+
 	public class MyKeyAdapter extends KeyAdapter{
 		@Override
 		public void keyPressed(KeyEvent e) {
